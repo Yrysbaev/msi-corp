@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# MSI Corporation Website
 
-First, run the development server:
+Welcome to the official repository of the **MSI Corporation** website. This is the main web presence for MSI Corporation, a visionary company providing a unique mix of creative and service-based offerings.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 About MSI Corporation
+
+**MSI Corporation** is dedicated to empowering customer visions by offering:
+- 🛍 **Custom Products:** Personalized t-shirts, hoodies, cups, bottles, and more — made exactly the way customers want.
+- 📸 **Photography & Videography:** Professional event coverage including birthdays, weddings, corporate events, and other special occasions.
+- 🍽 **Live Cooking Service:** Fresh, delicious food cooked on-site at your event, creating an unforgettable experience for your guests.
+
+> **Slogan:** *Empowering Your Vision, Creating Your Experience.*
+
+## 🚀 Features
+
+- Fully responsive website design (desktop & mobile)
+- Clean and modern layout with a bold look
+- Easy-to-navigate sections:
+  - Home
+  - About Us
+  - Our Services
+  - Contact Us
+- "Get a Quote" call-to-action buttons
+- Color palette:
+  - `Royal Blue` (primary)
+  - `White` (background)
+  - `Crimson` (accents)
+  - `Light Gray` (borders & subtle elements)
+
+## 🗂 Project Structure
+
+```
+msi-corporation-website/
+├── index.html
+├── style.css
+├── script.js (optional)
+├── assets/
+│   ├── images/
+│   └── fonts/
+├── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **HTML5**
+- **CSS3**
+- (Optional) JavaScript for interactivity
+- (Optional) Bootstrap (if needed later)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✅ How to Use
 
-## Learn More
+1. **Clone this repository:**
+   ```
+   git clone https://github.com/your-username/msi-corporation-website.git
+   ```
+2. **Open the project:**
+   - Open `index.html` in your browser.
+   - Edit `style.css` to customize the design.
+3. (Optional) Deploy online using Netlify, Vercel, or GitHub Pages.
 
-To learn more about Next.js, take a look at the following resources:
+## ✨ Future Improvements
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Add a working contact form (with backend integration)
+- SEO optimization
+- Image gallery with real client photos
+- Multi-language support
+- Animations & enhanced UX
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📸 Credits
 
-## Deploy on Vercel
+All images and assets are placeholders unless otherwise noted.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Made with ❤️ by MSI Corporation.**
