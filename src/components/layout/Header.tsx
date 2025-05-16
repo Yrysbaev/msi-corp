@@ -3,51 +3,38 @@ import React from 'react';
 
 export default function Header() {
   return (
-    <header className="fixed w-full top-0 z-50 bg-royal-blue/95 backdrop-blur-sm">
-      <div className="container py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white">
-            MSI Corporation
-          </Link>
-
-          {/* Main Navigation */}
-          <nav className="hidden md:block">
-            <ul className="flex space-x-8">
-              <li>
-                <Link href="/" className="text-white hover:text-crimson transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="text-white hover:text-crimson transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-white hover:text-crimson transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-white hover:text-crimson transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
-            <button className="btn btn-outline hidden sm:inline-block">
-              Login
-            </button>
-            <button className="btn btn-primary">
-              Sign Up
-            </button>
+    <nav className="navbar navbar-expand-lg fixed-top">
+      <div className="container">
+        <Link href="/" className="navbar-brand">
+          MSI Corporation
+        </Link>
+        
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <Link href="/" className="nav-link">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/services" className="nav-link">Services</Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/about" className="nav-link">About Us</Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/contact" className="nav-link">Contact</Link>
+            </li>
+          </ul>
+          
+          <div className="d-flex gap-2">
+            <button className="btn btn-outline-primary">Login</button>
+            <button className="btn btn-primary">Sign Up</button>
           </div>
         </div>
       </div>
-    </header>
+    </nav>
   );
 }

@@ -1,27 +1,4 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
   --royal-blue: #1a237e;
@@ -30,23 +7,50 @@
 }
 
 body {
-  @apply bg-[#1a237e] text-white;
+  background-color: #ffffff;
+  color: #333333;
+  font-family: 'Inter', sans-serif;
 }
 
-@layer components {
-  .container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-  
-  .btn {
-    @apply px-4 py-2 rounded-md transition-all duration-300;
-  }
-  
-  .btn-primary {
-    @apply bg-[#dc143c] text-white hover:bg-[#b01031];
-  }
-  
-  .btn-outline {
-    @apply border border-white text-white hover:bg-white hover:text-[#1a237e];
-  }
+.navbar {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  color: var(--royal-blue);
+  font-weight: bold;
+}
+
+.nav-link {
+  color: #333333;
+}
+
+.nav-link:hover {
+  color: var(--crimson);
+}
+
+.btn-primary {
+  background-color: var(--royal-blue);
+  border-color: var(--royal-blue);
+}
+
+.btn-primary:hover {
+  background-color: #141b63;
+  border-color: #141b63;
+}
+
+.section-title {
+  color: var(--royal-blue);
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.card {
+  border: 1px solid var(--light-gray);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
