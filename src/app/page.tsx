@@ -9,6 +9,9 @@ export default function HomePage() {
   return (
     <main>
       <Header />
+      <main className="p-4">
+        <h1>Welcome to MSI Corp</h1>
+      </main>
       <Hero />
       <Services />
       <Solutions />
