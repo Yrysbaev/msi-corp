@@ -28,25 +28,14 @@ Welcome to the official repository of the **MSI Corporation** website. This is t
   - `Crimson` (accents)
   - `Light Gray` (borders & subtle elements)
 
-## 🗂 Project Structure
 
-```
-msi-corporation-website/
-├── index.html
-├── style.css
-├── script.js (optional)
-├── assets/
-│   ├── images/
-│   └── fonts/
-├── README.md
-```
 
 ## 🛠 Tech Stack
 
 - **HTML5**
 - **CSS3**
-- (Optional) JavaScript for interactivity
-- (Optional) Bootstrap (if needed later)
+- JavaScript for interactivity
+- Bootstrap 
 
 ## ✅ How to Use
 
@@ -70,7 +59,5 @@ msi-corporation-website/
 ## 📸 Credits
 
 All images and assets are placeholders unless otherwise noted.
-
----
 
 **Made with ❤️ by MSI Corporation.**
