@@ -60,4 +60,4 @@ Welcome to the official repository of the **MSI Corporation** website. This is t
 
 All images and assets are placeholders unless otherwise noted.
 
-**Made with ❤️ by MSI Corporation.**
+**Made with ❤️ by Maksatbek Yrysbaev.**
