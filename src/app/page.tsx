@@ -1,22 +1,19 @@
-import Header from '@/components/layout/Header';
-import Hero from '@/components/sections/Hero';
-import Newsletter from '@/components/sections/Newsletter';
-import Services from '@/components/sections/Services';
-import Solutions from '@/components/sections/Solutions';
-import TrustedBy from '@/components/sections/TrustedBy';
+import Hero from './sections/Hero'
+import Services from './sections/Services'
+import About from './sections/About'
+import Portfolio from './sections/Portfolio'
+import Contact from './sections/Contact'
+import Footer from './sections/Footer'
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main>
-      <Header />
-      <main className="p-4">
-        <h1>Welcome to MSI Corp</h1>
-      </main>
+    <main className="min-h-screen bg-deep-navy text-white">
       <Hero />
       <Services />
-      <Solutions />
-      <TrustedBy />
-      <Newsletter />
+      <About />
+      <Portfolio />
+      <Contact />
+      <Footer />
     </main>
-  );
+  )
 }

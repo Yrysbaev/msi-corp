@@ -1,63 +1,36 @@
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-# MSI Corporation Website
+## Getting Started
 
-Welcome to the official repository of the **MSI Corporation** website. This is the main web presence for MSI Corporation, a visionary company providing a unique mix of creative and service-based offerings.
+First, run the development server:
 
-## 🌟 About MSI Corporation
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-**MSI Corporation** is dedicated to empowering customer visions by offering:
-- 🛍 **Custom Products:** Personalized t-shirts, hoodies, cups, bottles, and more — made exactly the way customers want.
-- 📸 **Photography & Videography:** Professional event coverage including birthdays, weddings, corporate events, and other special occasions.
-- 🍽 **Live Cooking Service:** Fresh, delicious food cooked on-site at your event, creating an unforgettable experience for your guests.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-> **Slogan:** *Empowering Your Vision, Creating Your Experience.*
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## 🚀 Features
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-- Fully responsive website design (desktop & mobile)
-- Clean and modern layout with a bold look
-- Easy-to-navigate sections:
-  - Home
-  - About Us
-  - Our Services
-  - Contact Us
-- "Get a Quote" call-to-action buttons
-- Color palette:
-  - `Royal Blue` (primary)
-  - `White` (background)
-  - `Crimson` (accents)
-  - `Light Gray` (borders & subtle elements)
+## Learn More
 
+To learn more about Next.js, take a look at the following resources:
 
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## 🛠 Tech Stack
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-- **HTML5**
-- **CSS3**
-- JavaScript for interactivity
-- Bootstrap 
+## Deploy on Vercel
 
-## ✅ How to Use
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-1. **Clone this repository:**
-   ```
-   git clone https://github.com/your-username/msi-corporation-website.git
-   ```
-2. **Open the project:**
-   - Open `index.html` in your browser.
-   - Edit `style.css` to customize the design.
-3. (Optional) Deploy online using Netlify, Vercel, or GitHub Pages.
-
-## ✨ Future Improvements
-
-- Add a working contact form (with backend integration)
-- SEO optimization
-- Image gallery with real client photos
-- Multi-language support
-- Animations & enhanced UX
-
-## 📸 Credits
-
-All images and assets are placeholders unless otherwise noted.
-
-**Made with ❤️ by Maksatbek Yrysbaev.**
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -1,8 +1,96 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-/* src/app/globals.css */
-body {
+html, body {
+  min-height: 100vh;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #00072D;
+  color: #fff;
   margin: 0;
-  font-family: Arial, sans-serif;
+  padding: 0;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 7, 45;
+  --background-end-rgb: 0, 28, 85;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #00072D;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0E6BA8;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0A2472;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Container padding for mobile */
+.container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Focus styles */
+*:focus {
+  outline: 2px solid #A6E1FA;
+  outline-offset: 2px;
+}
+
+/* Button hover effects */
+button, a {
+  transition: all 0.3s ease;
+}
+
+/* Form input styles */
+input, textarea {
+  transition: border-color 0.3s ease;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
