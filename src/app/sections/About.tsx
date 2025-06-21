@@ -24,7 +24,7 @@ export default function About() {
             <div className="bg-strong-blue p-6 rounded-lg">
               <h3 className="text-xl font-bold mb-3 text-white">Our Vision</h3>
               <p className="text-light-blue italic">
-                "Visionary Works that Connect, Express, and Inspire."
+                &ldquo;Visionary Works that Connect, Express, and Inspire.&rdquo;
               </p>
             </div>
           </motion.div>

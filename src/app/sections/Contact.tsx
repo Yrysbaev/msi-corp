@@ -18,7 +18,7 @@ export default function Contact() {
               Get in Touch
             </h2>
             <p className="text-light-blue text-lg">
-              Ready to start your next project? We'd love to hear from you.
+              Ready to start your next project? We&apos;d love to hear from you.
             </p>
           </div>
 

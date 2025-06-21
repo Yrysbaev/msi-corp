@@ -13,10 +13,10 @@ const navigation = [
 
 export default function Navigation() {
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-primary fixed-top shadow">
-      <div className="container-fluid">
+    <nav className="navbar navbar-expand-md navbar-dark bg-primary fixed-top shadow py-2">
+      <div className="container-fluid align-items-center">
         <Link href="/" legacyBehavior>
-          <a className="navbar-brand d-flex align-items-center">
+          <a className="navbar-brand d-flex align-items-center p-0 m-0">
             <Logo size="large" />
           </a>
         </Link>
@@ -24,10 +24,10 @@ export default function Navigation() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="mainNavbar">
-          <ul className="navbar-nav ms-auto mb-2 mb-md-0">
+          <ul className="navbar-nav ms-auto mb-2 mb-md-0 align-items-center">
             {navigation.map((item) => (
               <li className="nav-item" key={item.name}>
-                <a className="nav-link fw-bold text-uppercase px-3" href={item.href}>
+                <a className="nav-link fw-bold text-uppercase px-3 py-0" href={item.href}>
                   {item.name}
                 </a>
               </li>

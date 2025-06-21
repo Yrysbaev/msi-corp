@@ -7,24 +7,21 @@ import { motion } from 'framer-motion'
 interface LogoProps {
   className?: string
   size?: 'small' | 'medium' | 'large'
+  withText?: boolean // Optional: include text like "MSI Corporation"
 }
 
 const sizes = {
-  small: { width: 120, height: 36 },
-  medium: { width: 160, height: 48 },
-  large: { width: 200, height: 60 },
+  small: { width: 32, height: 32 },
+  medium: { width: 40, height: 40 },
+  large: { width: 56, height: 56 },
 }
 
-export default function Logo({ className = '', size = 'medium' }: LogoProps) {
+export default function Logo({ className = '', size = 'medium', withText = false }: LogoProps) {
   const dimensions = sizes[size]
 
   return (
-    <Link href="/">
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className={`relative ${className}`}
-      >
+    <Link href="/" aria-label="Go to homepage">
+      
         <Image
           src="/images/logos/msi-logo.png"
           alt="MSI Corporation Logo"
@@ -33,7 +30,7 @@ export default function Logo({ className = '', size = 'medium' }: LogoProps) {
           priority
           className="object-contain"
         />
-      </motion.div>
+    
     </Link>
   )
-} 
+}
