@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MSI Corporation Website
+
+A modern, bold, and visionary website for MSI Corporation - a multi-service creative company.
+
+## Features
+
+- 🎨 Modern, bold design with dark blue color palette
+- 📱 Fully responsive design
+- 🎬 Hero section with video background
+- 🛠️ Services showcase
+- 📸 Portfolio gallery
+- 📞 Contact form
+- 🍔 Mobile-friendly navigation
+
+## Tech Stack
+
+- **Backend**: Node.js with Express
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Fonts**: Montserrat (headings), DM Sans (body)
+- **Colors**: Custom dark blue palette
+
+## Project Structure
+
+```
+msi-corp/
+├── src/
+│   ├── public/           # Static assets
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   ├── js/
+│   │   │   └── script.js
+│   │   └── images/       # Images and media files
+│   └── views/            # HTML templates
+│       └── index.html
+├── server.js             # Express server
+├── package.json          # Node.js dependencies
+├── .gitignore           # Git ignore rules
+└── README.md            # This file
+```
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Start the server**:
+   ```bash
+   npm start
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Open your browser**:
+   Navigate to `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Development
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Port**: 3000 (configurable via PORT environment variable)
+- **Static files**: Served from `src/public/`
+- **Views**: Served from `src/views/`
+- **Hot reload**: Restart the server after making changes
 
-## Learn More
+## File Organization
 
-To learn more about Next.js, take a look at the following resources:
+### Static Assets (`src/public/`)
+- **CSS**: `src/public/css/style.css` - Main stylesheet
+- **JavaScript**: `src/public/js/script.js` - Client-side logic
+- **Images**: `src/public/images/` - All images and media files
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Views (`src/views/`)
+- **HTML**: `src/views/index.html` - Main page template
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Server
+- **server.js** - Express server configuration and routes
 
-## Deploy on Vercel
+## Customization
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Colors
+The color palette is defined in CSS variables:
+- Deep Navy: `#00072D`
+- Rich Navy: `#001C55`
+- Deep Blue: `#0A2472`
+- Strong Blue: `#0E6BA8`
+- Light Blue: `#A6E1FA`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Fonts
+- Headings: Montserrat (Google Fonts)
+- Body: DM Sans (Google Fonts)
+
+## License
+
+ISC 

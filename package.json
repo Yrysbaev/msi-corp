@@ -1,31 +1,25 @@
 {
   "name": "msi-corp",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "main": "server.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yrysbaev/msi-corp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yrysbaev/msi-corp/issues"
+  },
+  "homepage": "https://github.com/Yrysbaev/msi-corp#readme",
+  "description": "MSI Corporation - Multi-service creative company website",
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
-    "bootstrap": "^5.3.6",
-    "clsx": "^2.1.1",
-    "framer-motion": "^12.18.1",
-    "next": "15.3.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.3.1"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.3",
-    "typescript": "^5"
+    "express": "^4.18.2"
   }
 }
