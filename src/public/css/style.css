@@ -11,8 +11,8 @@ Root & Variables
     --light-blue: #A6E1FA;
     --white: #FFFFFF;
     
-    --font-primary: 'Montserrat', sans-serif;
-    --font-secondary: 'DM Sans', sans-serif;
+    --font-primary: 'Montserrat', 'Arial', sans-serif;
+    --font-secondary: 'DM Sans', 'Arial', sans-serif;
 
     --header-height: 80px;
 }
@@ -142,8 +142,33 @@ Header & Navigation
 }
 
 .nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s ease;
     font-family: var(--font-primary);
     font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--light-blue);
+}
+
+/* Admin Link Styling */
+.admin-link {
+    font-size: 0.85rem !important;
+    opacity: 0.7;
+    padding: 5px 10px !important;
+    border: 1px solid rgba(166, 225, 250, 0.3) !important;
+    border-radius: 15px !important;
+    background: rgba(166, 225, 250, 0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+.admin-link:hover {
+    opacity: 1 !important;
+    background: rgba(166, 225, 250, 0.2) !important;
+    border-color: var(--light-blue) !important;
+    color: var(--light-blue) !important;
 }
 
 .hamburger {
@@ -184,10 +209,12 @@ Hero Section
 }
 
 .hero-title {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 900;
+    font-family: 'Montserrat', 'Arial', sans-serif;
     margin-bottom: 1rem;
     line-height: 1.2;
+    color: var(--white);
 }
 
 .hero-subtitle {
@@ -249,21 +276,65 @@ About Section
 Portfolio Section
 --- */
 .portfolio-section {
-    background-color: var(--rich-navy);
+    padding: 80px 0;
+    background: #001C55;
 }
+
 .portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
 }
+
+.portfolio-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
 .portfolio-item img {
     width: 100%;
-    height: auto;
-    border-radius: 10px;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.portfolio-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 28, 85, 0.9));
+    color: white;
+    padding: 30px 20px 20px;
+    transform: translateY(100%);
     transition: transform 0.3s ease;
 }
-.portfolio-item:hover img {
-    transform: scale(1.05);
+
+.portfolio-item:hover .portfolio-overlay {
+    transform: translateY(0);
+}
+
+.portfolio-overlay h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: #A6E1FA;
+}
+
+.portfolio-overlay p {
+    font-size: 14px;
+    margin: 0;
+    opacity: 0.8;
 }
 
 

@@ -1,119 +1,182 @@
 # MSI Corporation Website
 
-A modern, bold, and visionary website for MSI Corporation - a multi-service creative company.
+A modern, professional website for MSI Corporation - a multi-service creative company specializing in web development, graphic design, and digital marketing.
 
 ## Features
 
-- 🎨 Modern, bold design with dark blue color palette
-- 📱 Fully responsive design
-- 🎬 Hero section with video background
-- 🛠️ Services showcase
-- 📸 Portfolio gallery
-- 📞 Contact form
-- 🍔 Mobile-friendly navigation
+- **Modern Design**: Clean, professional design with a dark blue color palette
+- **Responsive Layout**: Fully responsive design that works on all devices
+- **Admin Panel**: Secure admin dashboard for content management
+- **Professional Branding**: Consistent MSI Corporation branding throughout
 
 ## Tech Stack
 
-- **Backend**: Node.js with Express
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Fonts**: Montserrat (headings), DM Sans (body)
-- **Colors**: Custom dark blue palette
+- **Backend**: Node.js with Express.js
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
+- **Styling**: Custom CSS with modern design principles
+- **Authentication**: Express sessions for admin panel security
+- **Server**: Express.js server with static file serving
+
+## Color Palette
+
+- Primary Dark Blue: `#00072D`
+- Secondary Dark Blue: `#001C55`
+- Medium Blue: `#0A2472`
+- Light Blue: `#0E6BA8`
+- Accent Blue: `#A6E1FA`
+
+## Fonts
+
+- **Headings**: Montserrat (Bold, Semi-bold, Regular)
+- **Body Text**: DM Sans (Regular, Medium, Semi-bold)
 
 ## Project Structure
 
 ```
 msi-corp/
 ├── src/
-│   ├── public/           # Static assets
+│   ├── public/
 │   │   ├── css/
-│   │   │   └── style.css
+│   │   │   ├── style.css          # Main website styles
+│   │   │   └── admin.css          # Admin panel styles
 │   │   ├── js/
-│   │   │   └── script.js
-│   │   └── images/       # Images and media files
-│   └── views/            # HTML templates
-│       └── index.html
-├── server.js             # Express server
-├── package.json          # Node.js dependencies
-├── vercel.json          # Vercel deployment config
-├── netlify.toml         # Netlify deployment config
-├── .gitignore           # Git ignore rules
-└── README.md            # This file
+│   │   │   ├── script.js          # Main website JavaScript
+│   │   │   └── admin.js           # Admin panel JavaScript
+│   │   └── images/
+│   │       ├── logo.png
+│   │       └── hero.mp4
+│   └── views/
+│       ├── index.html             # Main website
+│       ├── login.html             # Admin login page
+│       └── admin.html             # Admin dashboard
+├── server.js                      # Express server
+├── package.json
+└── README.md
 ```
 
-## Getting Started
+## Installation
 
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd msi-corp
+```
 
-2. **Start the server**:
-   ```bash
-   npm start
-   ```
+2. Install dependencies:
+```bash
+npm install
+```
 
-3. **Open your browser**:
-   Navigate to `http://localhost:3000`
+3. Start the development server:
+```bash
+npm start
+```
+
+4. Open your browser and navigate to `http://localhost:3000`
+
+## Admin Panel
+
+The website includes a secure admin panel for content management.
+
+### Accessing the Admin Panel
+
+1. Navigate to `http://localhost:3000/admin/login`
+2. Use the default credentials:
+   - **Username**: `admin`
+   - **Password**: `admin123`
+
+### Admin Panel Features
+
+- **Dashboard**: Overview of website statistics and quick actions
+- **Content Management**: Edit website content sections
+- **Services Management**: Add, edit, and delete services
+- **Portfolio Management**: Manage portfolio projects
+- **Settings**: Update admin account and site settings
+
+### Security Features
+
+- Session-based authentication
+- Protected admin routes
+- Secure logout functionality
+- Environment variable support for credentials
+
+### Customizing Admin Credentials
+
+For production, set environment variables:
+
+```bash
+export ADMIN_USERNAME=your_username
+export ADMIN_PASSWORD=your_secure_password
+export SESSION_SECRET=your_session_secret
+```
 
 ## Development
 
-- **Port**: 3000 (configurable via PORT environment variable)
-- **Static files**: Served from `src/public/`
-- **Views**: Served from `src/views/`
-- **Hot reload**: Restart the server after making changes
+### Running in Development Mode
+
+```bash
+npm run dev
+```
+
+### Building for Production
+
+```bash
+npm run build
+```
 
 ## Deployment
 
-### Option 1: Vercel (Recommended for Node.js)
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Vercel will automatically detect the Node.js project
-4. Deploy with the included `vercel.json` configuration
+### Environment Variables
 
-### Option 2: Netlify (Static Hosting)
-1. Push your code to GitHub
-2. Connect your repository to Netlify
-3. Set build command: `npm install`
-4. Set publish directory: `src/public`
-5. Deploy using the included `netlify.toml` configuration
+Set these environment variables for production:
 
-### Option 3: Railway/Render/Heroku
-1. Push your code to GitHub
-2. Connect your repository to your chosen platform
-3. Set the start command: `npm start`
-4. Deploy (platforms will auto-detect Node.js)
+- `PORT`: Server port (default: 3000)
+- `ADMIN_USERNAME`: Admin panel username
+- `ADMIN_PASSWORD`: Admin panel password
+- `SESSION_SECRET`: Session encryption secret
+- `NODE_ENV`: Set to 'production' for secure cookies
 
-### Option 4: Static Hosting (GitHub Pages, etc.)
-Use the static version in `src/public/index.html` with relative paths.
+### Deployment Platforms
 
-## File Organization
+The application can be deployed to:
 
-### Static Assets (`src/public/`)
-- **CSS**: `src/public/css/style.css` - Main stylesheet
-- **JavaScript**: `src/public/js/script.js` - Client-side logic
-- **Images**: `src/public/images/` - All images and media files
-- **Static HTML**: `src/public/index.html` - For static hosting
+- **Vercel**: Use the included `vercel.json` configuration
+- **Netlify**: Use the included `netlify.toml` configuration
+- **Heroku**: Deploy directly from the repository
+- **DigitalOcean**: Deploy to App Platform or Droplet
 
-### Views (`src/views/`)
-- **HTML**: `src/views/index.html` - Main page template (for Node.js)
+## API Endpoints
 
-### Server
-- **server.js** - Express server configuration and routes
+### Public Endpoints
 
-## Customization
+- `GET /` - Main website
+- `GET /admin/login` - Admin login page
 
-### Colors
-The color palette is defined in CSS variables:
-- Deep Navy: `#00072D`
-- Rich Navy: `#001C55`
-- Deep Blue: `#0A2472`
-- Strong Blue: `#0E6BA8`
-- Light Blue: `#A6E1FA`
+### Protected Endpoints (Require Authentication)
 
-### Fonts
-- Headings: Montserrat (Google Fonts)
-- Body: DM Sans (Google Fonts)
+- `GET /admin` - Admin dashboard
+- `GET /api/admin/stats` - Website statistics
+- `GET /api/admin/services` - Services data
+- `GET /api/admin/portfolio` - Portfolio data
+- `POST /admin/login` - Admin login
+- `GET /logout` - Admin logout
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## License
 
-ISC 
+This project is licensed under the MIT License.
+
+## Support
+
+For support or questions, please contact the development team.
+
+---
+
+**MSI Corporation** - Transforming ideas into digital reality. 
