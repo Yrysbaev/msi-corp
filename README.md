@@ -1,4 +1,4 @@
-# MSI Corporation Website
+# MSI Corporation Website 
 
 A modern, professional website for MSI Corporation - a multi-service creative company specializing in web development, graphic design, and digital marketing.
 
