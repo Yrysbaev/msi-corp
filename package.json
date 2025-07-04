@@ -31,8 +31,10 @@
   "description": "MSI Corporation - Multi-service creative company website built with Node.js and Express",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "dotenv": "^17.0.1",
     "express": "^4.18.2",
     "express-session": "^1.18.1",
-    "multer": "^2.0.1"
+    "multer": "^2.0.1",
+    "pg": "^8.16.3"
   }
 }
