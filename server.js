@@ -9,7 +9,7 @@ const multer = require('multer');
 const { Pool } = require('pg');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'src', 'public', 'uploads');
@@ -516,6 +516,16 @@ app.delete('/api/admin/files/delete', requireAuth, async (req, res) => {
     }
 });
 
+// Place this BEFORE error and 404 handlers!
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ time: result.rows[0].now });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Error handling middleware for multer upload errors
 app.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
@@ -553,15 +563,6 @@ app.use((req, res) => {
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
-});
-
-app.get('/api/db-test', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ time: result.rows[0].now });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 app.listen(PORT, () => {
