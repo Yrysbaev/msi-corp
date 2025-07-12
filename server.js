@@ -75,35 +75,61 @@ app.use(session({
     }
 }));
 
-// Admin credentials (in production, these should be stored in environment variables or database)
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+// Database connection
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
+});
 
-// In-memory storage for dynamic content (in production, use a database)
-let dynamicContent = {
-    services: [
-        { id: 1, name: 'Web Development', description: 'Custom websites and web applications', icon: '🛠️' },
-        { id: 2, name: 'Graphic Design', description: 'Brand identity and visual design', icon: '🎨' },
-        { id: 3, name: 'Digital Marketing', description: 'SEO, social media, and content marketing', icon: '📈' }
-    ],
-    portfolio: [
-        { id: 1, name: 'E-commerce Website', category: 'Web Development', image: 'https://via.placeholder.com/300x200', description: 'A professional e-commerce platform' },
-        { id: 2, name: 'Brand Identity', category: 'Graphic Design', image: 'https://via.placeholder.com/300x200', description: 'Complete brand identity package' }
-    ],
-    websiteContent: {
-        hero: {
-            title: 'We Create. We Capture. We Customize.',
-            subtitle: 'Visionary works that connect, express, and inspire.'
-        },
-        about: {
-            text: 'MSI Corporation is a multi-service creative company dedicated to bringing ideas to life. From custom merchandise to capturing unforgettable moments, we combine creativity with professionalism to deliver exceptional results that resonate.'
-        },
-        contact: {
-            email: 'info@msicorp.com',
-            phone: '+1 (555) 123-4567'
-        }
+// Test database connection
+pool.query('SELECT NOW()', (err, res) => {
+    if (err) {
+        console.error('❌ Database connection failed:', err);
+    } else {
+        console.log('✅ Database connected successfully');
     }
-};
+});
+
+// Database helper functions
+async function getWebsiteContent() {
+    try {
+        const result = await pool.query('SELECT * FROM website_content');
+        const content = {};
+        result.rows.forEach(row => {
+            content[row.section] = {
+                title: row.title,
+                subtitle: row.subtitle,
+                content: row.content,
+                email: row.email,
+                phone: row.phone
+            };
+        });
+        return content;
+    } catch (error) {
+        console.error('Error fetching website content:', error);
+        return {};
+    }
+}
+
+async function getServices() {
+    try {
+        const result = await pool.query('SELECT * FROM services ORDER BY created_at');
+        return result.rows;
+    } catch (error) {
+        console.error('Error fetching services:', error);
+        return [];
+    }
+}
+
+async function getPortfolio() {
+    try {
+        const result = await pool.query('SELECT * FROM portfolio ORDER BY created_at');
+        return result.rows;
+    } catch (error) {
+        console.error('Error fetching portfolio:', error);
+        return [];
+    }
+}
 
 // Middleware to check if user is authenticated
 function requireAuth(req, res, next) {
@@ -117,32 +143,47 @@ function requireAuth(req, res, next) {
 // Routes
 app.get('/', async (req, res) => {
     try {
-        console.log('🔄 Serving dynamic homepage...');
-        console.log('📊 Current services:', dynamicContent.services.length);
-        console.log('📊 Current services data:', dynamicContent.services);
+        console.log('🔄 Serving dynamic homepage from database...');
+        
+        // Fetch data from database
+        const [websiteContent, services, portfolio] = await Promise.all([
+            getWebsiteContent(),
+            getServices(),
+            getPortfolio()
+        ]);
+        
+        console.log('📊 Fetched from database:', { 
+            services: services.length, 
+            portfolio: portfolio.length,
+            contentSections: Object.keys(websiteContent).length
+        });
         
         // Read the static HTML template
         let htmlContent = await fs.readFile(path.join(__dirname, 'src', 'views', 'index.html'), 'utf8');
         console.log('📄 HTML template loaded, length:', htmlContent.length);
         
         // Replace static content with dynamic content
-        htmlContent = htmlContent.replace(
-            /<h1 class="hero-title">.*?<\/h1>/s,
-            `<h1 class="hero-title">${dynamicContent.websiteContent.hero.title}</h1>`
-        );
+        if (websiteContent.hero) {
+            htmlContent = htmlContent.replace(
+                /<h1 class="hero-title">.*?<\/h1>/s,
+                `<h1 class="hero-title">${websiteContent.hero.title || 'We Create. We Capture. We Customize.'}</h1>`
+            );
+            
+            htmlContent = htmlContent.replace(
+                /<p class="hero-subtitle">.*?<\/p>/s,
+                `<p class="hero-subtitle">${websiteContent.hero.subtitle || 'Visionary works that connect, express, and inspire.'}</p>`
+            );
+        }
         
-        htmlContent = htmlContent.replace(
-            /<p class="hero-subtitle">.*?<\/p>/s,
-            `<p class="hero-subtitle">${dynamicContent.websiteContent.hero.subtitle}</p>`
-        );
-        
-        htmlContent = htmlContent.replace(
-            /<p>MSI Corporation is a multi-service creative company.*?<\/p>/s,
-            `<p>${dynamicContent.websiteContent.about.text}</p>`
-        );
+        if (websiteContent.about) {
+            htmlContent = htmlContent.replace(
+                /<p>MSI Corporation is a multi-service creative company.*?<\/p>/s,
+                `<p>${websiteContent.about.content || 'MSI Corporation is a multi-service creative company dedicated to bringing ideas to life.'}</p>`
+            );
+        }
         
         // Replace services section
-        const servicesHtml = dynamicContent.services.map(service => `
+        const servicesHtml = services.map(service => `
             <div class="service-card">
                 <h3>${service.icon} ${service.name}</h3>
                 <p>${service.description}</p>
@@ -157,9 +198,9 @@ app.get('/', async (req, res) => {
         );
         
         // Replace portfolio section
-        const portfolioHtml = dynamicContent.portfolio.map(project => `
+        const portfolioHtml = portfolio.map(project => `
             <div class="portfolio-item">
-                <img src="${project.image}" alt="${project.name}">
+                <img src="${project.image_url}" alt="${project.name}">
                 <div class="portfolio-overlay">
                     <h3>${project.name}</h3>
                     <p>${project.category}</p>
@@ -174,7 +215,7 @@ app.get('/', async (req, res) => {
             `<div class="portfolio-grid">${portfolioHtml}</div>`
         );
         
-        console.log('✅ Dynamic homepage generated successfully');
+        console.log('✅ Dynamic homepage generated successfully from database');
         res.send(htmlContent);
     } catch (error) {
         console.error('❌ Error serving homepage:', error);
@@ -195,14 +236,33 @@ app.get('/admin/login', (req, res) => {
 app.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
 
+    console.log('🔐 Login attempt:', { username, password: password ? '***' : 'NOT PROVIDED' });
+
     try {
-        // In production, you should hash passwords and store them securely
-        // For demo purposes, we're using plain text comparison
-        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Query database for user
+        const result = await pool.query(
+            'SELECT * FROM admin_users WHERE username = $1',
+            [username]
+        );
+
+        if (result.rows.length === 0) {
+            console.log('❌ Login failed - user not found:', username);
+            return res.status(401).json({ success: false, message: 'Invalid username or password' });
+        }
+
+        const user = result.rows[0];
+        
+        // Compare password with bcrypt
+        const isValidPassword = await bcrypt.compare(password, user.password_hash);
+        
+        if (isValidPassword) {
             req.session.isAuthenticated = true;
             req.session.username = username;
+            req.session.userId = user.id;
+            console.log('✅ Login successful for user:', username);
             res.json({ success: true, message: 'Login successful' });
         } else {
+            console.log('❌ Login failed - invalid password for user:', username);
             res.status(401).json({ success: false, message: 'Invalid username or password' });
         }
     } catch (error) {
@@ -560,13 +620,8 @@ app.use((req, res) => {
     res.status(404).send('Page not found');
 });
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
-});
-
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Admin panel available at http://localhost:${PORT}/admin/login`);
-    console.log(`Default admin credentials: ${ADMIN_USERNAME} / ${ADMIN_PASSWORD}`);
+    console.log('✅ Database-based authentication enabled');
 }); 
