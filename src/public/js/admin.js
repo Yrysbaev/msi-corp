@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Login Page Functionality
 function handleLoginPage() {
+    console.log('handleLoginPage loaded');
     const loginForm = document.getElementById('loginForm');
     const errorMessage = document.getElementById('errorMessage');
 
