@@ -76,6 +76,11 @@ function handleAdminDashboard() {
     // Navigation functionality
     setupNavigation();
     
+    // Load data from database
+    loadDashboardStats();
+    loadServices();
+    loadPortfolio();
+    
     // Dashboard interactions
     setupDashboardInteractions();
     
@@ -93,6 +98,92 @@ function handleAdminDashboard() {
     
     // Content management
     setupContentManagement();
+}
+
+// Load Dashboard Stats from Database
+function loadDashboardStats() {
+    fetch('/api/admin/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalServices').textContent = data.totalServices;
+            document.getElementById('totalPortfolio').textContent = data.portfolioItems;
+            document.getElementById('totalVisits').textContent = data.siteVisits.toLocaleString();
+            document.getElementById('uniqueVisitors').textContent = data.uniqueVisitors.toLocaleString();
+            document.getElementById('todayViews').textContent = data.todayViews.toLocaleString();
+            document.getElementById('todayVisitors').textContent = data.todayVisitors.toLocaleString();
+        })
+        .catch(error => {
+            console.error('Error loading dashboard stats:', error);
+            document.getElementById('totalServices').textContent = 'Error';
+            document.getElementById('totalPortfolio').textContent = 'Error';
+            document.getElementById('totalVisits').textContent = 'Error';
+            document.getElementById('uniqueVisitors').textContent = 'Error';
+            document.getElementById('todayViews').textContent = 'Error';
+            document.getElementById('todayVisitors').textContent = 'Error';
+        });
+}
+
+// Load Services from Database
+function loadServices() {
+    fetch('/api/admin/services')
+        .then(response => response.json())
+        .then(services => {
+            const servicesList = document.getElementById('servicesList');
+            if (services.length === 0) {
+                servicesList.innerHTML = '<div class="no-data">No services found. Add your first service!</div>';
+                return;
+            }
+            
+            servicesList.innerHTML = services.map(service => `
+                <div class="service-item" data-id="${service.id}">
+                    <div class="service-info">
+                        <h3>${service.icon} ${service.name}</h3>
+                        <p>${service.description}</p>
+                    </div>
+                    <div class="service-actions">
+                        <button class="edit-btn" onclick="showEditServiceModal('${service.name}')">Edit</button>
+                        <button class="delete-btn" onclick="showDeleteConfirmation('${service.name}', this.closest('.service-item'))">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(error => {
+            console.error('Error loading services:', error);
+            document.getElementById('servicesList').innerHTML = '<div class="error">Error loading services</div>';
+        });
+}
+
+// Load Portfolio from Database
+function loadPortfolio() {
+    fetch('/api/admin/portfolio')
+        .then(response => response.json())
+        .then(portfolio => {
+            const portfolioGrid = document.getElementById('portfolioGrid');
+            if (portfolio.length === 0) {
+                portfolioGrid.innerHTML = '<div class="no-data">No portfolio items found. Add your first project!</div>';
+                return;
+            }
+            
+            portfolioGrid.innerHTML = portfolio.map(project => `
+                <div class="portfolio-item" data-id="${project.id}">
+                    <div class="portfolio-image">
+                        <img src="${project.image_url}" alt="${project.name}" onerror="this.src='https://via.placeholder.com/300x200'">
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>${project.name}</h3>
+                        <p>${project.category}</p>
+                    </div>
+                    <div class="portfolio-actions">
+                        <button class="edit-btn" onclick="showEditPortfolioModal('${project.name}')">Edit</button>
+                        <button class="delete-btn" onclick="showDeleteConfirmation('${project.name}', this.closest('.portfolio-item'))">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(error => {
+            console.error('Error loading portfolio:', error);
+            document.getElementById('portfolioGrid').innerHTML = '<div class="error">Error loading portfolio</div>';
+        });
 }
 
 // Navigation Setup

@@ -54,19 +54,21 @@ INSERT INTO admin_users (username, password_hash, email) VALUES
 -- Insert default website content
 INSERT INTO website_content (section, title, subtitle, content, email, phone) VALUES
 ('hero', 'We Create. We Capture. We Customize.', 'Visionary works that connect, express, and inspire.', NULL, NULL, NULL),
-('about', NULL, NULL, 'MSI Corporation is a multi-service creative company dedicated to bringing ideas to life. From custom merchandise to capturing unforgettable moments, we combine creativity with professionalism to deliver exceptional results that resonate.', NULL, NULL),
+('about', NULL, NULL, 'MSI Corporation is a creative services company specializing in custom merchandise, professional photography, and innovative creative solutions. We bring your ideas to life through personalized products, stunning visual content, and strategic creative consulting.', NULL, NULL),
 ('contact', NULL, NULL, NULL, 'info@msicorp.xyz', '+1 (555) 123-4567');
 
 -- Insert default services
 INSERT INTO services (name, description, icon) VALUES
-('Web Development', 'Custom websites and web applications', '🛠️'),
-('Graphic Design', 'Brand identity and visual design', '🎨'),
-('Digital Marketing', 'SEO, social media, and content marketing', '📈');
+('Custom Merchandise', 'Personalized products and branded merchandise', '🎁'),
+('Event Photography', 'Professional photography services', '📸'),
+('Creative Solutions', 'Innovative creative services and consulting', '💡');
 
--- Insert default portfolio items (with placeholder Cloudinary URLs)
+-- Insert default portfolio items
 INSERT INTO portfolio (name, category, description, image_url) VALUES
-('E-commerce Website', 'Web Development', 'A professional e-commerce platform', 'https://res.cloudinary.com/msicorp/image/upload/v1/portfolio/ecommerce-placeholder.jpg'),
-('Brand Identity', 'Graphic Design', 'Complete brand identity package', 'https://res.cloudinary.com/msicorp/image/upload/v1/portfolio/brand-placeholder.jpg');
+('Royal Moving Company', 'Branding', 'Logo design and brand identity for premium moving service', '/images/royal-moving-logo.png'),
+('FSN Style', 'Custom Merchandise', 'Custom uniforms and branded merchandise collaboration', '/images/fsn-style-logo.png'),
+('Harmony Public Schools', 'Creative Solutions', 'Educational branding and marketing materials', '/images/harmony-schools-logo.png'),
+('KGSA', 'Creative Solutions', 'Professional branding and creative services', '/images/kgsa-logo.png');
 
 -- Add indexes for better performance
 CREATE INDEX idx_admin_users_username ON admin_users(username);

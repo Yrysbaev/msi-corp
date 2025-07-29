@@ -64,6 +64,52 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
+// Tracking middleware
+app.use(async (req, res, next) => {
+    // Skip tracking for admin routes and API calls
+    if (req.path.startsWith('/admin') || req.path.startsWith('/api') || req.path.includes('.')) {
+        return next();
+    }
+    
+    try {
+        if (pool) {
+            const ip = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'];
+            const userAgent = req.headers['user-agent'];
+            const referrer = req.headers.referer || '';
+            const page = req.path;
+            
+            // Record the visit
+            await pool.query(
+                'INSERT INTO site_visits (page, ip_address, user_agent, referrer) VALUES ($1, $2, $3, $4)',
+                [page, ip, userAgent, referrer]
+            );
+            
+            // Update unique visitors
+            await pool.query(
+                `INSERT INTO unique_visitors (ip_address, last_visit, total_visits) 
+                 VALUES ($1, CURRENT_TIMESTAMP, 1)
+                 ON CONFLICT (ip_address) 
+                 DO UPDATE SET last_visit = CURRENT_TIMESTAMP, total_visits = unique_visitors.total_visits + 1`,
+                [ip]
+            );
+            
+            // Update daily stats
+            await pool.query(
+                `INSERT INTO daily_stats (date, page_views, unique_visitors) 
+                 VALUES (CURRENT_DATE, 1, 1)
+                 ON CONFLICT (date) 
+                 DO UPDATE SET page_views = daily_stats.page_views + 1`,
+                []
+            );
+        }
+    } catch (error) {
+        console.error('Tracking error:', error);
+        // Don't block the request if tracking fails
+    }
+    
+    next();
+});
+
 // Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET || 'msi-corp-secret-key-change-in-production',
@@ -79,18 +125,18 @@ app.use(session({
 let pool;
 if (process.env.DATABASE_URL) {
     pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
-    });
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
+});
 
-    // Test database connection
-    pool.query('SELECT NOW()', (err, res) => {
-        if (err) {
-            console.error('❌ Database connection failed:', err);
-        } else {
-            console.log('✅ Database connected successfully');
-        }
-    });
+// Test database connection
+pool.query('SELECT NOW()', (err, res) => {
+    if (err) {
+        console.error('❌ Database connection failed:', err);
+    } else {
+        console.log('✅ Database connected successfully');
+    }
+});
 } else {
     console.log('⚠️  No DATABASE_URL found - running in demo mode with static data');
 }
@@ -343,86 +389,169 @@ app.get('/logout', (req, res) => {
 });
 
 // API endpoints for admin functionality (protected)
-app.get('/api/admin/stats', requireAuth, (req, res) => {
-    // Mock statistics data
-    const stats = {
-        totalServices: dynamicContent.services.length,
-        portfolioItems: dynamicContent.portfolio.length,
-        contactMessages: 3,
-        siteVisits: 1247
-    };
-    res.json(stats);
-});
-
-app.get('/api/admin/services', requireAuth, (req, res) => {
-    res.json(dynamicContent.services);
-});
-
-app.post('/api/admin/services', requireAuth, (req, res) => {
-    const { name, description, icon } = req.body;
-    const newService = {
-        id: Date.now(),
-        name,
-        description,
-        icon: icon || '🛠️'
-    };
-    dynamicContent.services.push(newService);
-    res.json({ success: true, service: newService });
-});
-
-app.put('/api/admin/services/:id', requireAuth, (req, res) => {
-    const { id } = req.params;
-    const { name, description, icon } = req.body;
-    
-    const serviceIndex = dynamicContent.services.findIndex(s => s.id == id);
-    if (serviceIndex !== -1) {
-        dynamicContent.services[serviceIndex] = {
-            ...dynamicContent.services[serviceIndex],
-            name,
-            description,
-            icon: icon || '🛠️'
+app.get('/api/admin/stats', requireAuth, async (req, res) => {
+    try {
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const servicesResult = await pool.query('SELECT COUNT(*) FROM services');
+        const portfolioResult = await pool.query('SELECT COUNT(*) FROM portfolio');
+        
+        // Get real tracking stats
+        const visitsResult = await pool.query('SELECT COUNT(*) FROM site_visits');
+        const uniqueVisitorsResult = await pool.query('SELECT COUNT(*) FROM unique_visitors');
+        const todayStatsResult = await pool.query('SELECT page_views, unique_visitors FROM daily_stats WHERE date = CURRENT_DATE');
+        
+        const stats = {
+            totalServices: parseInt(servicesResult.rows[0].count),
+            portfolioItems: parseInt(portfolioResult.rows[0].count),
+            contactMessages: 3,
+            siteVisits: parseInt(visitsResult.rows[0].count),
+            uniqueVisitors: parseInt(uniqueVisitorsResult.rows[0].count),
+            todayViews: todayStatsResult.rows.length > 0 ? parseInt(todayStatsResult.rows[0].page_views) : 0,
+            todayVisitors: todayStatsResult.rows.length > 0 ? parseInt(todayStatsResult.rows[0].unique_visitors) : 0
         };
-        res.json({ success: true, service: dynamicContent.services[serviceIndex] });
-    } else {
-        res.status(404).json({ success: false, message: 'Service not found' });
+        res.json(stats);
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        res.status(500).json({ success: false, message: 'Error fetching stats' });
     }
 });
 
-app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
-    const { id } = req.params;
-    const serviceIndex = dynamicContent.services.findIndex(s => s.id == id);
-    if (serviceIndex !== -1) {
-        dynamicContent.services.splice(serviceIndex, 1);
-        res.json({ success: true });
-    } else {
-        res.status(404).json({ success: false, message: 'Service not found' });
+app.get('/api/admin/content', requireAuth, async (req, res) => {
+    try {
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query('SELECT * FROM website_content');
+        const websiteContent = {};
+        result.rows.forEach(row => {
+            websiteContent[row.section] = row;
+        });
+        
+        res.json(websiteContent);
+    } catch (error) {
+        console.error('Error fetching website content:', error);
+        res.status(500).json({ success: false, message: 'Error fetching website content' });
     }
 });
 
-app.get('/api/admin/portfolio', requireAuth, (req, res) => {
-    res.json(dynamicContent.portfolio);
+app.get('/api/admin/services', requireAuth, async (req, res) => {
+    try {
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query('SELECT * FROM services ORDER BY id');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching services:', error);
+        res.status(500).json({ success: false, message: 'Error fetching services' });
+    }
 });
 
-app.post('/api/admin/portfolio', requireAuth, upload.single('image'), (req, res) => {
+app.post('/api/admin/services', requireAuth, async (req, res) => {
+    try {
+        const { name, description, icon } = req.body;
+        
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query(
+            'INSERT INTO services (name, description, icon) VALUES ($1, $2, $3) RETURNING *',
+            [name, description, icon || '🛠️']
+        );
+        
+        res.json({ success: true, service: result.rows[0] });
+    } catch (error) {
+        console.error('Error creating service:', error);
+        res.status(500).json({ success: false, message: 'Error creating service' });
+    }
+});
+
+app.put('/api/admin/services/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, icon } = req.body;
+        
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query(
+            'UPDATE services SET name = $1, description = $2, icon = $3 WHERE id = $4 RETURNING *',
+            [name, description, icon || '🛠️', id]
+        );
+        
+        if (result.rows.length > 0) {
+            res.json({ success: true, service: result.rows[0] });
+        } else {
+            res.status(404).json({ success: false, message: 'Service not found' });
+        }
+    } catch (error) {
+        console.error('Error updating service:', error);
+        res.status(500).json({ success: false, message: 'Error updating service' });
+    }
+});
+
+app.delete('/api/admin/services/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query('DELETE FROM services WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length > 0) {
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ success: false, message: 'Service not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        res.status(500).json({ success: false, message: 'Error deleting service' });
+    }
+});
+
+app.get('/api/admin/portfolio', requireAuth, async (req, res) => {
+    try {
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query('SELECT * FROM portfolio ORDER BY created_at DESC');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching portfolio:', error);
+        res.status(500).json({ success: false, message: 'Error fetching portfolio' });
+    }
+});
+
+app.post('/api/admin/portfolio', requireAuth, upload.single('image'), async (req, res) => {
     try {
         const { name, category, description, url } = req.body;
         
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
         // Handle image upload
-        let imageUrl = 'https://via.placeholder.com/300x200'; // Default placeholder
+        let imageUrl = '/images/placeholder.png'; // Default placeholder
         if (req.file) {
             imageUrl = `/uploads/${req.file.filename}`;
         }
         
-        const newProject = {
-            id: Date.now(),
-            name,
-            category,
-            description,
-            image: imageUrl,
-            url: url || ''
-        };
-        dynamicContent.portfolio.push(newProject);
-        res.json({ success: true, project: newProject });
+        const result = await pool.query(
+            'INSERT INTO portfolio (name, category, description, image_url, url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [name, category, description, imageUrl, url || '']
+        );
+        
+        res.json({ success: true, project: result.rows[0] });
     } catch (error) {
         console.error('Error creating portfolio item:', error);
         res.status(500).json({ success: false, message: 'Error creating portfolio item' });
@@ -434,64 +563,114 @@ app.put('/api/admin/portfolio/:id', requireAuth, upload.single('image'), async (
         const { id } = req.params;
         const { name, category, description, url } = req.body;
         
-        const projectIndex = dynamicContent.portfolio.findIndex(p => p.id == id);
-        if (projectIndex !== -1) {
-            let imageUrl = dynamicContent.portfolio[projectIndex].image; // Keep existing image
-            
-            // Handle new image upload
-            if (req.file) {
-                imageUrl = `/uploads/${req.file.filename}`;
-            } else if (name && name !== dynamicContent.portfolio[projectIndex].name) {
-                // Rename existing file if project name changed and no new file uploaded
-                const currentImagePath = path.join(__dirname, 'src', 'public', imageUrl.replace('/uploads/', ''));
-                try {
-                    const newPath = await renameUploadedFile(currentImagePath, name);
-                    imageUrl = `/uploads/${path.basename(newPath)}`;
-                } catch (renameError) {
-                    console.error('Error renaming file:', renameError);
-                    // Continue with old filename if rename fails
-                }
-            }
-            
-            dynamicContent.portfolio[projectIndex] = {
-                ...dynamicContent.portfolio[projectIndex],
-                name,
-                category,
-                description,
-                image: imageUrl,
-                url: url || ''
-            };
-            res.json({ success: true, project: dynamicContent.portfolio[projectIndex] });
-        } else {
-            res.status(404).json({ success: false, message: 'Project not found' });
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
         }
+        
+        // Get current portfolio item
+        const currentResult = await pool.query('SELECT * FROM portfolio WHERE id = $1', [id]);
+        if (currentResult.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Project not found' });
+        }
+        
+        let imageUrl = currentResult.rows[0].image_url; // Keep existing image
+        
+        // Handle new image upload
+        if (req.file) {
+            imageUrl = `/uploads/${req.file.filename}`;
+        }
+        
+        const result = await pool.query(
+            'UPDATE portfolio SET name = $1, category = $2, description = $3, image_url = $4, url = $5 WHERE id = $6 RETURNING *',
+            [name, category, description, imageUrl, url || '', id]
+        );
+        
+        res.json({ success: true, project: result.rows[0] });
     } catch (error) {
         console.error('Error updating portfolio item:', error);
         res.status(500).json({ success: false, message: 'Error updating portfolio item' });
     }
 });
 
-app.delete('/api/admin/portfolio/:id', requireAuth, (req, res) => {
-    const { id } = req.params;
-    const projectIndex = dynamicContent.portfolio.findIndex(p => p.id == id);
-    if (projectIndex !== -1) {
-        dynamicContent.portfolio.splice(projectIndex, 1);
-        res.json({ success: true });
-    } else {
-        res.status(404).json({ success: false, message: 'Project not found' });
+app.delete('/api/admin/portfolio/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        const result = await pool.query('DELETE FROM portfolio WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length > 0) {
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ success: false, message: 'Project not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting portfolio item:', error);
+        res.status(500).json({ success: false, message: 'Error deleting portfolio item' });
     }
 });
 
-app.put('/api/admin/content', requireAuth, (req, res) => {
-    const { heroTitle, heroSubtitle, aboutText, contactEmail, contactPhone } = req.body;
-    
-    if (heroTitle) dynamicContent.websiteContent.hero.title = heroTitle;
-    if (heroSubtitle) dynamicContent.websiteContent.hero.subtitle = heroSubtitle;
-    if (aboutText) dynamicContent.websiteContent.about.text = aboutText;
-    if (contactEmail) dynamicContent.websiteContent.contact.email = contactEmail;
-    if (contactPhone) dynamicContent.websiteContent.contact.phone = contactPhone;
-    
-    res.json({ success: true, content: dynamicContent.websiteContent });
+app.put('/api/admin/content', requireAuth, async (req, res) => {
+    try {
+        const { heroTitle, heroSubtitle, aboutText, contactEmail, contactPhone } = req.body;
+        
+        if (!pool) {
+            return res.status(500).json({ success: false, message: 'Database not connected' });
+        }
+        
+        // Update hero section
+        if (heroTitle) {
+            await pool.query(
+                'UPDATE website_content SET title = $1 WHERE section = $2',
+                [heroTitle, 'hero']
+            );
+        }
+        
+        if (heroSubtitle) {
+            await pool.query(
+                'UPDATE website_content SET subtitle = $1 WHERE section = $2',
+                [heroSubtitle, 'hero']
+            );
+        }
+        
+        // Update about section
+        if (aboutText) {
+            await pool.query(
+                'UPDATE website_content SET content = $1 WHERE section = $2',
+                [aboutText, 'about']
+            );
+        }
+        
+        // Update contact section
+        if (contactEmail) {
+            await pool.query(
+                'UPDATE website_content SET email = $1 WHERE section = $2',
+                [contactEmail, 'contact']
+            );
+        }
+        
+        if (contactPhone) {
+            await pool.query(
+                'UPDATE website_content SET phone = $1 WHERE section = $2',
+                [contactPhone, 'contact']
+            );
+        }
+        
+        // Get updated content
+        const result = await pool.query('SELECT * FROM website_content');
+        const websiteContent = {};
+        result.rows.forEach(row => {
+            websiteContent[row.section] = row;
+        });
+        
+        res.json({ success: true, content: websiteContent });
+    } catch (error) {
+        console.error('Error updating website content:', error);
+        res.status(500).json({ success: false, message: 'Error updating content' });
+    }
 });
 
 // File management endpoints

@@ -62,22 +62,30 @@
             <div class="admin-content">
                 <!-- Dashboard Section -->
                 <section id="dashboard" class="content-section active">
-                    <div class="dashboard-stats">
+                    <div class="dashboard-stats" id="dashboardStats">
                         <div class="stat-card">
                             <h3>Total Services</h3>
-                            <p class="stat-number">6</p>
+                            <p class="stat-number" id="totalServices">Loading...</p>
                         </div>
                         <div class="stat-card">
                             <h3>Portfolio Items</h3>
-                            <p class="stat-number">12</p>
+                            <p class="stat-number" id="totalPortfolio">Loading...</p>
                         </div>
                         <div class="stat-card">
-                            <h3>Contact Messages</h3>
-                            <p class="stat-number">3</p>
+                            <h3>Total Page Views</h3>
+                            <p class="stat-number" id="totalVisits">Loading...</p>
                         </div>
                         <div class="stat-card">
-                            <h3>Site Visits</h3>
-                            <p class="stat-number">1,247</p>
+                            <h3>Unique Visitors</h3>
+                            <p class="stat-number" id="uniqueVisitors">Loading...</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Today's Views</h3>
+                            <p class="stat-number" id="todayViews">Loading...</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Today's Visitors</h3>
+                            <p class="stat-number" id="todayVisitors">Loading...</p>
                         </div>
                     </div>
                     
@@ -125,37 +133,9 @@
                         <button class="add-btn">+ Add New Service</button>
                     </div>
                     
-                    <div class="services-list">
-                        <div class="service-item" data-id="1">
-                            <div class="service-info">
-                                <h3>Web Development</h3>
-                                <p>Custom websites and web applications</p>
-                            </div>
-                            <div class="service-actions">
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </div>
-                        </div>
-                        <div class="service-item" data-id="2">
-                            <div class="service-info">
-                                <h3>Graphic Design</h3>
-                                <p>Brand identity and visual design</p>
-                            </div>
-                            <div class="service-actions">
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </div>
-                        </div>
-                        <div class="service-item" data-id="3">
-                            <div class="service-info">
-                                <h3>Digital Marketing</h3>
-                                <p>SEO, social media, and content marketing</p>
-                            </div>
-                            <div class="service-actions">
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </div>
-                        </div>
+                    <div class="services-list" id="servicesList">
+                        <!-- Services will be loaded dynamically from database -->
+                        <div class="loading">Loading services...</div>
                     </div>
                 </section>
 
@@ -166,33 +146,9 @@
                         <button class="add-btn">+ Add New Project</button>
                     </div>
                     
-                    <div class="portfolio-grid">
-                        <div class="portfolio-item">
-                            <div class="portfolio-image">
-                                <img src="https://via.placeholder.com/300x200" alt="Project 1">
-                            </div>
-                            <div class="portfolio-info">
-                                <h3>E-commerce Website</h3>
-                                <p>Web Development</p>
-                            </div>
-                            <div class="portfolio-actions">
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </div>
-                        </div>
-                        <div class="portfolio-item">
-                            <div class="portfolio-image">
-                                <img src="https://via.placeholder.com/300x200" alt="Project 2">
-                            </div>
-                            <div class="portfolio-info">
-                                <h3>Brand Identity</h3>
-                                <p>Graphic Design</p>
-                            </div>
-                            <div class="portfolio-actions">
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </div>
-                        </div>
+                    <div class="portfolio-grid" id="portfolioGrid">
+                        <!-- Portfolio items will be loaded dynamically from database -->
+                        <div class="loading">Loading portfolio...</div>
                     </div>
                 </section>
 
