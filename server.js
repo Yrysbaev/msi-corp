@@ -76,22 +76,44 @@ app.use(session({
 }));
 
 // Database connection
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
-});
+let pool;
+if (process.env.DATABASE_URL) {
+    pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false } // Needed for Render/Heroku
+    });
 
-// Test database connection
-pool.query('SELECT NOW()', (err, res) => {
-    if (err) {
-        console.error('❌ Database connection failed:', err);
-    } else {
-        console.log('✅ Database connected successfully');
-    }
-});
+    // Test database connection
+    pool.query('SELECT NOW()', (err, res) => {
+        if (err) {
+            console.error('❌ Database connection failed:', err);
+        } else {
+            console.log('✅ Database connected successfully');
+        }
+    });
+} else {
+    console.log('⚠️  No DATABASE_URL found - running in demo mode with static data');
+}
 
 // Database helper functions
 async function getWebsiteContent() {
+    if (!pool) {
+        // Return static data if no database
+        return {
+            hero: {
+                title: 'We Create. We Capture. We Customize.',
+                subtitle: 'Visionary works that connect, express, and inspire.'
+            },
+            about: {
+                content: 'MSI Corporation is a multi-service creative company dedicated to bringing ideas to life. From custom merchandise to capturing unforgettable moments, we combine creativity with professionalism to deliver exceptional results that resonate.'
+            },
+            contact: {
+                email: 'info@msicorp.xyz',
+                phone: '+1 (555) 123-4567'
+            }
+        };
+    }
+    
     try {
         const result = await pool.query('SELECT * FROM website_content');
         const content = {};
@@ -112,6 +134,15 @@ async function getWebsiteContent() {
 }
 
 async function getServices() {
+    if (!pool) {
+        // Return static data if no database
+        return [
+            { name: 'Custom Merchandise', description: 'Personalized products and branded merchandise', icon: '🎁' },
+            { name: 'Event Photography', description: 'Professional photography for special events', icon: '📸' },
+            { name: 'Creative Solutions', description: 'Innovative creative services and consulting', icon: '💡' }
+        ];
+    }
+    
     try {
         const result = await pool.query('SELECT * FROM services ORDER BY created_at');
         return result.rows;
@@ -122,6 +153,16 @@ async function getServices() {
 }
 
 async function getPortfolio() {
+    if (!pool) {
+        // Return static data if no database
+        return [
+            { name: 'Royal Moving Company', category: 'Branding', description: 'Logo design and brand identity for premium moving service', image_url: '/images/royal-moving-logo.png' },
+            { name: 'FSN Style', category: 'Custom Merchandise', description: 'Custom uniforms and branded merchandise collaboration', image_url: '/images/fsn-style-logo.png' },
+            { name: 'Harmony Public Schools', category: 'Creative Solutions', description: 'Educational branding and marketing materials', image_url: '/images/harmony-schools-logo.png' },
+            { name: 'KGSA', category: 'Creative Solutions', description: 'Professional branding and creative services', image_url: '/images/kgsa-logo.svg' }
+        ];
+    }
+    
     try {
         const result = await pool.query('SELECT * FROM portfolio ORDER BY created_at');
         return result.rows;
@@ -237,6 +278,21 @@ app.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
 
     console.log('🔐 Login attempt:', { username, password: password ? '***' : 'NOT PROVIDED' });
+
+    // Demo mode login (when no database)
+    if (!pool) {
+        if (username === 'admin' && password === 'admin123') {
+            req.session.isAuthenticated = true;
+            req.session.username = username;
+            req.session.userId = 1;
+            console.log('✅ Demo mode login successful for user:', username);
+            res.json({ success: true, message: 'Login successful' });
+        } else {
+            console.log('❌ Demo mode login failed - invalid credentials');
+            res.status(401).json({ success: false, message: 'Invalid username or password' });
+        }
+        return;
+    }
 
     try {
         // Query database for user
@@ -576,6 +632,21 @@ app.delete('/api/admin/files/delete', requireAuth, async (req, res) => {
     }
 });
 
+// Serve About Us page
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'views', 'about.html'));
+});
+
+// Serve Services page
+app.get('/services', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'views', 'services.html'));
+});
+
+// Serve Under Construction page
+app.get('/under-construction', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'views', 'under-construction.html'));
+});
+
 // Place this BEFORE error and 404 handlers!
 app.get('/api/db-test', async (req, res) => {
   try {
@@ -615,9 +686,9 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-// 404 handler
+// 404 handler - redirect to under construction page
 app.use((req, res) => {
-    res.status(404).send('Page not found');
+    res.redirect('/under-construction');
 });
 
 app.listen(PORT, () => {

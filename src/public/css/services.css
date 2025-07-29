@@ -1,0 +1,139 @@
+/* Services Page Styles */
+
+/* Hero Section */
+.services-hero {
+    min-height: 40vh;
+    padding-top: 120px;
+    background: linear-gradient(135deg, var(--deep-navy), var(--rich-navy));
+    text-align: center;
+}
+
+.services-hero .hero-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.services-hero .hero-subtitle {
+    font-size: 1.3rem;
+    color: var(--light-blue);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Services Overview Section */
+.services-overview {
+    padding: 60px 0;
+    background: var(--deep-navy);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.service-card {
+    background: var(--rich-navy);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.service-title {
+    color: var(--light-blue);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.service-description {
+    margin-bottom: 20px;
+}
+
+.service-features {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+}
+
+.service-features li {
+    margin-bottom: 10px;
+}
+
+/* Why Choose Us Section */
+.why-choose-us {
+    background: var(--rich-navy);
+    padding: 60px 0;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.benefit-item {
+    text-align: center;
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.benefit-title {
+    color: var(--light-blue);
+    margin-bottom: 10px;
+}
+
+/* Call to Action Section */
+.cta-section {
+    background: var(--deep-blue);
+    padding: 60px 0;
+    text-align: center;
+}
+
+.cta-title {
+    color: var(--light-blue);
+    margin-bottom: 1rem;
+}
+
+.cta-description {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    font-size: 1.1rem;
+    padding: 15px 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .services-hero .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .service-card {
+        padding: 30px 20px;
+    }
+} 
