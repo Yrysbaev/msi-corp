@@ -378,6 +378,35 @@ app.get('/admin', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'admin.html'));
 });
 
+// Debug endpoint to check database status
+app.get('/debug', (req, res) => {
+    const debugInfo = {
+        databaseConnected: !!pool,
+        databaseUrl: process.env.DATABASE_URL ? 'Set' : 'Not set',
+        nodeEnv: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+    };
+    
+    if (pool) {
+        // Test database connection
+        pool.query('SELECT NOW() as current_time, (SELECT COUNT(*) FROM admin_users) as admin_count')
+            .then(result => {
+                debugInfo.databaseTest = 'Success';
+                debugInfo.currentTime = result.rows[0].current_time;
+                debugInfo.adminCount = result.rows[0].admin_count;
+                res.json(debugInfo);
+            })
+            .catch(error => {
+                debugInfo.databaseTest = 'Failed';
+                debugInfo.databaseError = error.message;
+                res.json(debugInfo);
+            });
+    } else {
+        debugInfo.databaseTest = 'No pool';
+        res.json(debugInfo);
+    }
+});
+
 // Logout endpoint
 app.get('/logout', (req, res) => {
     req.session.destroy((err) => {
